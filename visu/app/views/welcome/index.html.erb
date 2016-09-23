@@ -1,0 +1,444 @@
+
+
+<% infos =  @current.split('_') unless @current.nil? %>
+<div id="xp-name" data-name="<%= @current %>"></div>
+
+
+
+
+<div class="ui inline cookie nag">
+  <span class="title">
+    We use cookies to ensure you get the best experience on our website
+  </span>
+  <i class="close icon"></i>
+</div>
+
+  <div class="ui inverted left  vertical  sidebar labeled icon menu">
+    <a class="item" href="/">
+      <i class="home icon"></i>
+      <div class="content">
+        <div class="header">HOME</div>
+      </div>
+    </a>
+    <% @results.keys.each do |r| %>
+        <a data-name="<%= @results[r][:link] %>"  data-content="<%=  type_description(@results[r][:type])[:description] %> - <%= @results[r][:link].split('_')[2..@results[r][:link].split('_').size].join(' ').capitalize %>" data-position="right center" class="  menu_popup <%= 'active' if @current && @current == r %> item" href="?xp=<%= @results[r][:link] %>">
+          <i class="ui <%=   type_description(@results[r][:type])[:icon] %> icon"></i>
+          <div class="content">
+            <div class="header"> <%= r %></div>
+
+          </div>
+        </a>
+    <% end %>
+
+  </div>
+
+  <div class="pusher">
+
+    <div id="main" class="">
+      <div class="ui main  container">
+        <div class="ui inverted segment">
+          <div class="ui inverted right attached rail">
+
+            <div class="ui two buttons" style="padding-left: 5px;">
+              <button id="xp_display"  class="ui basic grey labeled icon button">
+                <i class="lab icon"></i>
+                Select Xp
+              </button>
+              <button id="xp_reset"  class="ui basic grey right labeled icon button">
+                <i class=" undo icon"></i>
+                Reset
+              </button>
+          </div>
+            <div class="ui inverted segment">
+
+              <% if @current.nil? && @patterns.nil? %>
+                  <center><i>Please select an Xp to display the graph.</i></center>
+
+                  <% unless @errors.nil? && @errors.empty? %>
+                      <div class="content">
+
+                        <% @errors.each do |e| %>
+                          <p><%= e %></p>
+                        <% end %>
+
+                      </div>
+                  <% end %>
+
+
+
+
+              <% else %>
+
+
+                   <div id="searchPatternContainer" class="ui  small right labeled input">
+                    <div class="ui label">
+                    /
+                    </div>
+                   <input id="search_pattern" type="text"  placeholder="Search by regex">
+                     <div class="ui  label">/</div>
+                  </div>
+                  <span><input id="reverse_regex" type="checkbox" tabindex="0" class="hidden"> Reverse</span>
+
+
+
+                  <!-- OPTIONS ACCORDION -->
+                  <div  class="ui inverted accordion">
+
+                    <div class="title">
+                      <i class="dropdown icon"></i>
+                      Options
+                    </div>
+                    <div class="content">
+
+                      <% if @type != 'map'%>
+
+
+                          <label>Layout Charge</label>
+                          <div class="ui ">
+                            <input id="sliderPatternLayout" type="range" min="100" max="1200" value="600" step="50"  />
+                            <span id="range">600</span>
+                          </div>
+                          <br>
+                          <label>Layout friction</label>
+                          <div class="ui ">
+                            <input id="sliderPatternFriction" type="range" min="0" max="1" value="0.3" step="0.1"  />
+                            <span id="friction">0.3</span>
+                          </div>
+                          <br>
+
+                          <label>Node Size</label>
+                          <div class="ui ">
+                            <input id="sliderPatternSize" type="range" min="1" max="80" value="30" step="1"  />
+                            <span id="node_size">30</span>
+                          </div>
+
+                          <br>
+                          <label>Edge Distance</label>
+                          <div class="ui ">
+                            <input id="sliderPatternDistance" type="range" min="1" max="70" value="4" step="2"  />
+                            <span id="edge_distance"></span>
+                          </div>
+
+                      <% else %>
+                          <br>
+
+                          <label>Edge power <i class="fa fa-info-circle" data-content="Applied a multiplier to Q" data-variation="inverted" ></i></label>
+                          <div class="ui ">
+                            <input id="edgePower" type="range" min="1" max="5" value="1.2" step="0.2"  />
+                            <span id="edgePower_value">1.2</span>
+                          </div>
+                          <br>
+
+                          <label>Edges Color <i class="fa fa-info-circle" data-content="Dynamically change the Edge color" data-variation="inverted" ></i></label><br>
+                          <div class="ui mini input">
+                            <input  id="edgesColor" class="jscolor" value="FFA500">
+                          </div>
+                          <br>
+                          <br>
+
+
+                          <label>Arrows Color <i class="fa fa-info-circle"  data-content="Dynamically change the Arrow color" data-variation="inverted"></i></label><br>
+                          <div class="ui mini input">
+                            <input id="arrowColor" class="jscolor" value="FF0000">
+                          </div>
+                          <br>
+                          <br>
+
+                          <label>IRIS Opacity <i class="fa fa-info-circle"  data-content="Dynamically change the shape's opacity " data-variation="inverted"></i></label>
+                          <div class="ui ">
+                            <input id="irisOpacity" type="range" min="0.1" max="0.9" value="0.3" step="0.1"  />
+                            <span id="irisOpacity_value">0.3</span>
+                          </div>
+                          <br>
+
+                          <label>IRIS Color <i class="fa fa-info-circle"  data-content="Dynamically change the shape's color" data-variation="inverted"></i></label><br>
+                          <div class="ui mini input">
+                            <input id="irisColor" class="jscolor" value="F1FF2E">
+                          </div>
+                          <br>
+                          <br>
+
+
+
+
+                      <% end %>
+
+
+
+                    </div>
+
+                    <div class="title">
+                      <i class="dropdown icon"></i>
+                      Filters
+                    </div>
+                    <div class="content">
+
+                      <label for="amount">Edge Range : <span id="edgeRange" ></span></label><br><br>
+                      <div style="width:75%;" id="edge-slider-range"></div>
+
+                      <div class="ui divider"></div>
+
+                      <label>Node Range : <span id="nodeRange" ></span></label><br><br>
+                      <div style="width:75%;" id="node-slider-range"></div>
+
+                    </div>
+
+                  </div>
+                  <!-- END OPTIONS ACCORDION -->
+
+                  <div class="ui  inverted divider"></div>
+
+
+                  <div id="tableLoader" class="ui active inverted"></div>
+
+
+
+                  <!-- PATTERNS TABLE -->
+                  <i class="fa fa-info-circle floated right"  data-content="Click on a column name to sort it" data-variation="inverted"></i>
+                  <table id="patternsTable" style=""  class="ui fixed_headers basic inverted  sortable  table ">
+                    <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>qSum</th>
+                      <th>maxCC</th>
+                      <th>sumCC</th>
+                      <th>#v</th>
+                      <th>#e</th>
+                      <th>qSum/Edges</th>
+                      <!--<th class="no-sort" >pattern</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <% min_nodes = 100000000 %>
+                    <% min_edges = 100000000 %>
+                    <% max_nodes = 0 %>
+                    <% max_edges = 0 %>
+
+
+                    <% @uniq_key.reverse_each.to_h.each do |key| %>
+
+
+                        <% if key[1][:count] > 0 %>
+                            <% key[1][:index].each_with_index do |i, index| %>
+                                <% pattern = @patterns[i] %>
+
+
+                                <% string = "<ul class='ui list'>"%>
+                                <% if @type == 'map'%>
+                                    <% p =   pattern[:attrs].pop %>
+                                    <% p.keys.each { |e| string << "<li>#{e.tr("_"," ")} : #{ p[e] }</li>" }%>
+                                <% end %>
+                                <tr class="<%='group_separated' if index == key[1][:index].size - 1 %>" data-index="<%= i %>" data-variation="inverted" data-position="left center" data-html="<%= string.concat('</ul>').html_safe %>">
+                                  <td><%= i %></td>
+
+                                  <% pattern[:attrs].each_with_index do |attr, j| %>
+
+
+                                      <% min_nodes = attr.to_i if j == 3 && min_nodes > attr.to_i  %>
+                                      <% max_nodes = attr.to_i if j == 3 && max_nodes < attr.to_i  %>
+                                      <% min_edges = attr.to_i if j == 4 && min_edges > attr.to_i  %>
+                                      <% max_edges = attr.to_i if j == 4 && max_edges < attr.to_i  %>
+
+                                      <% klass = 'node_column' if j == 3 %>
+                                      <% klass = 'edge_column' if j == 4 %>
+                                      <td class="<%= klass %>" data-value="<%= attr %>"><%= attr %></td>
+                                  <% end %>
+
+                                </tr>
+                            <% end %>
+                        <% else  %>
+                            <% key[1][:index].each do |i| %>
+                                <% pattern = @patterns[i] %>
+                                <% string = "<ul class='ui list'>"%>
+                                <% if @type == 'map'%>
+                                    <% p =   pattern[:attrs].pop %>
+                                    <% p.keys.each { |e| string << "<li>#{e.tr("_"," ")} : #{ p[e] }</li>" }%>
+                                <% end %>
+
+                                <tr class="" data-index="<%= i %>" data-variation="inverted" data-position="left center" data-html="<%= string.concat('</ul>').html_safe %>" >
+                                  <td><%= i %></td>
+                                  <% pattern[:attrs].each_with_index do |attr, k| %>
+                                      <% klass = 'node_column' if k == 3 %>
+                                      <% klass = 'edge_column' if k == 4 %>
+                                      <td class="<%= klass %>" data-value="<%= attr %>"><%= attr %></td>
+                                  <% end %>
+                                </tr>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                    </tbody>
+                  </table>
+                  <!-- END PATTERNS TABLE -->
+
+
+
+                 <p id="minMaxTablePatterns" style="display: nonel" data-min-node="<%= min_nodes %>" data-max-node="<%= max_nodes %>" data-min-edge="<%= min_edges %>" data-max-edge="<%= max_edges %>"></p>
+
+
+
+
+
+                  <!-- PATTERN INFO ACCORDION -->
+                  <div id="patternAccordion" class="ui inverted accordion">
+                    <div id="patternContainer" class="title">
+                      <i class="dropdown icon"></i>
+                      Pattern info <i class="fa fa-info-circle" data-content="Display Distribution of Q and support context" data-variation="inverted" ></i>
+                    </div>
+                    <div id="patternContainerContent" class="content">
+                        Please Click on a Patterns table row to display extra informations.
+                    </div>
+                  </div>
+                  <!-- END PATTERN INFO ACCORDION -->
+
+
+
+                  <div class="ui  inverted divider"></div>
+
+
+                  <!-- DATA INFO -->
+                  <p> Demographic data from <a target="_blank" href="http://www.ign.fr/">IGN</a> : </p>
+                  <div class="ui bulleted list">
+                    <div class="item">Public transport infrastructure 2014</div>
+                    <div class="item">Population 2012</div>
+                    <div class="item">Higher education training 2014</div>
+                  </div>
+                  <br><i><%= infos[2..infos.size].join(' ').capitalize %></i>
+                  <i>Experience generated at <%=   DateTime.strptime( infos[1], '%s').strftime('%F %H:%M ') %></i><br><br>
+                  <!-- END DATA INFO -->
+
+                  <div class="ui two column grid">
+                    <div class="column">
+                      <a href="https://www.insa-lyon.fr/" target="_blank"> <img class="ui  image" style="width: 183px; height: 40px" src="https://www.insa-lyon.fr/sites/all/themes/insa/img/logo-footer.png" /></a>
+                    </div>
+                    <div class="column">
+                      <a href="http://ec.europa.eu/research/participants/portal/desktop/en/opportunities/fp7/calls/fp7-people-2013-iapp.html" target="_blank"> <img class="ui small image" style="" src="http://liris.cnrs.fr/dm2l/projects/graisearch/img/mariecurie.jpg" /></a>
+                    </div>
+                  </div>
+
+
+
+
+
+
+                  <div class="row">
+                    <div class="col-sm-6">
+
+                    </div>
+                    <div class="col-sm-4">
+
+                    </div>
+                  </div>
+
+
+              <% end %>
+
+
+            </div>
+          </div>
+
+          <% if @type == 'map' %>
+              <div id="infoIris" class="ui card">
+                <div class="content">
+                  <div class="header"><i class="close icon aligned" style="color:#fff; cursor: pointer"></i></div>
+                </div>
+                <div id="infoIrisContent" class="content">
+
+
+                </div>
+              </div>
+          <% end %>
+          <div id="graph_container">
+            <div class="patter_information"></div>
+            <% if @graph.nil? && (@complexity.nil? || @complexity == false) %>
+
+                <section class="canvas-wrap">
+
+                  <div class="canvas-content">
+
+                    <h4 class="ui header lighter" style="color:#F14533">
+                      Data Mining,
+                      Machine Learning
+                      <br><i class="ui floated left" style="color:#235C8D">a data science research group</i>
+                    </h4>
+                  </div>
+                  <div id="canvas" class="gradient"></div>
+                  <br>
+                  <center><p>Please select an Xp to display the graph.</p></center>
+                  <br>
+                  <div style="position: absolute;right: 5px;width: 213px;bottom: 5px;">
+                    <div  class="ui sticky inverted twitter_card">
+                      <div class="ui card">
+                        <div class="content">
+                          <div class="header"></div>
+                          <div class="description">
+                            <div class="ui relaxed horizontal list">
+                              <div class="item">
+                                <img class="ui avatar image" src="/assets/logo_dm2l_twitter.png">
+                                <div class="content">
+                                  <p>Stay in touch</p>
+                                  <a class="header" href="https://twitter.com/LirisDM2L" target="_blank">Follow @LirisDM2L</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="extra content">
+                          <a href="https://twitter.com/intent/tweet?text=%20via%20%40LirisDM2L&source=webclient" target="_blank" style="color:#fff;"><span class="right floated like">
+                      <i class="twitter icon"></i>
+                      Tweet
+                    </span></a>
+                   <a href="http://liris.cnrs.fr/dm2l" target="_blank" style="color:#fff;"> <span class="left floated like">
+                      <i class="world icon"></i>
+                      Site web
+                    </span></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+            <% end %>
+          </div>
+          <div class="pattern_information"></div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="ui small basic test modal transition hidden" style="margin-top: -123px;">
+  <div class="ui icon header">
+    <i class="trash icon"></i>
+    Delete an Experience
+  </div>
+  <div class="content">
+    <h3>Are you sure to want to delete this xp: </h3>
+    - <strong><p id="xp_delete_name"></p></strong>
+    <p id="xp_delete_description"></p>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      No
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>
+      Yes
+    </div>
+  </div>
+</div>
+
+
+
+<% unless @graph.nil? && @patterns.nil? %>
+      <script type="text/javascript">
+      var data = <%= @graph.to_json.to_s.html_safe %>;
+      var patterns = <%= @patterns.to_json.to_s.html_safe %>;
+    </script>
+
+<% end %>
