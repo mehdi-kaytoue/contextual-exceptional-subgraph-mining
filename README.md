@@ -10,7 +10,7 @@ cd cosmic && make
 ```
 
 ## Input data
-Basically, you will find the following. The three first lines are headers. Then transactions appears with the values of their attributes (att0,att1,att2) and the depart/arrival nodes of the edge on which the transaction is attached. The first header lines gives the attributes names and has to finished with IN;OUT. Next line specifies the attributes types (N for numerical; S for symbolic). The last line tells where to start the search (Important: after a start *, only start can appear, you may need to rearrange the columns)
+Basically, you will find the following. The three first lines are headers. Then transactions appear with the values of their attributes (att0,att1,att2) and the depart/arrival nodes of the edge on which the transaction is attached. The first header lines gives the attributes names and has to finished with IN;OUT. Next line specifies the attributes types (N for numerical; S for symbolic). The third line tells where to start the search, that is from which pattern and not necessarilly from the most general one <*,*,...,*> (Important: after a start *, only start can appear, you may need to rearrange the columns)
 ```
 att0;att1;att2;IN;OUT
 S;S;S;S;S
@@ -22,8 +22,8 @@ S;S;S;S;S
 You may simply generate an artificial dataset (with default parameters) to understand its basic CSV format: ```cd data-generator ; javac TransGenerator.java && java TransGenerator```
 
 ## Run Cosmic
-We provide a example in the script ```./run.sh```
-The algorithms takes several parameters:
+We provide an example in the script ```./run.sh```
+The algorithm takes several parameters:
 * filename 
 * minimal number of nodes in a pattern
 * minimal number of edges in a pattern
